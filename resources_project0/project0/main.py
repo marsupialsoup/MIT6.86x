@@ -56,7 +56,7 @@ def neural_network(inputs, weights):
        out - a 1 x 1 NumPy array, representing the output of the neural network
     """
     #Your code here
-    raise NotImplementedError
+    return np.tanh(np.matmul(weights.transpose(),inputs))
 
 def scalar_function(x, y):
     """
