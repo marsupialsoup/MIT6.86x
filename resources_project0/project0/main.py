@@ -41,7 +41,7 @@ def norm(A, B):
       s - the L2 norm of A+B.
     """
     #Your code here
-    raise NotImplementedError
+    return np.linalg.norm(A+B)
 
 
 def neural_network(inputs, weights):
