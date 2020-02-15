@@ -163,12 +163,13 @@ def average_perceptron(feature_matrix, labels, T):
     # Your code here
     n, d = feature_matrix.shape
     theta_final, theta_0_final = np.zeros(d), 0
+    theta, theta_0 = np.zeros(d), 0
     for t in range(T):
         for i in get_order(feature_matrix.shape[0]):
-            theta, theta_0 = perceptron_single_step_update(feature_matrix[i,:],labels[i],np.zeros(d),0)
+            theta, theta_0 = perceptron_single_step_update(feature_matrix[i,:],labels[i],theta,theta_0)
             theta_final = theta_final + theta
-            theta_0 = theta_0_final + theta_0
-    return theta_final / n*T, theta_0_final / n*T
+            theta_0_final = theta_0_final + theta_0
+    return theta_final / (n*T), theta_0_final / (n*T)
 #pragma: coderesponse end
 
 
