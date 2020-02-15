@@ -37,7 +37,7 @@ def hinge_loss_single(feature_vector, label, theta, theta_0):
     given data point and parameters.
     """
     # Your code here
-    raise NotImplementedError
+    return max(0, 1-label*(np.dot(feature_vector,theta)+theta_0))
 #pragma: coderesponse end
 
 
@@ -61,7 +61,8 @@ def hinge_loss_full(feature_matrix, labels, theta, theta_0):
     loss across all of the points in the feature matrix.
     """
     # Your code here
-    raise NotImplementedError
+    n = feature_matrix.shape[0]
+    return np.sum(hinge_loss_single(feature_matrix[i,:],labels[i],theta,theta_0) for i in range(n)) / n
 #pragma: coderesponse end
 
 
@@ -89,7 +90,8 @@ def perceptron_single_step_update(
     completed.
     """
     # Your code here
-    raise NotImplementedError
+    classification = np.sign(np.dot(feature_vector,current_theta)+current_theta_0)
+    return (current_theta + label * feature_vector, current_theta_0 + label) if classification != label else (current_theta, current_theta_0)
 #pragma: coderesponse end
 
 
@@ -119,12 +121,12 @@ def perceptron(feature_matrix, labels, T):
     theta_0, the offset classification parameter, after T iterations through
     the feature matrix.
     """
-    # Your code here
+    n, d = feature_matrix.shape
+    theta, theta_0 = np.zeros(d), 0
     for t in range(T):
         for i in get_order(feature_matrix.shape[0]):
-            # Your code here
-            pass
-    raise NotImplementedError
+            theta, theta_0 = perceptron_single_step_update(feature_matrix[i,:],labels[i],theta,theta_0)
+    return theta, theta_0
 #pragma: coderesponse end
 
 
@@ -159,7 +161,14 @@ def average_perceptron(feature_matrix, labels, T):
     find a sum and divide.
     """
     # Your code here
-    raise NotImplementedError
+    n, d = feature_matrix.shape
+    theta_final, theta_0_final = np.zeros(d), 0
+    for t in range(T):
+        for i in get_order(feature_matrix.shape[0]):
+            theta, theta_0 = perceptron_single_step_update(feature_matrix[i,:],labels[i],np.zeros(d),0)
+            theta_final = theta_final + theta
+            theta_0 = theta_0_final + theta_0
+    return theta_final / n*T, theta_0_final / n*T
 #pragma: coderesponse end
 
 
