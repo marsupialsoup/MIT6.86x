@@ -201,7 +201,10 @@ def pegasos_single_step_update(
     completed.
     """
     # Your code here
-    raise NotImplementedError
+    margin = label * (np.dot(feature_vector,current_theta)+current_theta_0)
+    theta = (1.0-eta*L)*current_theta
+    theta_0 = current_theta_0
+    return (theta + eta*label*feature_vector,theta_0 + eta*label) if margin <= 1.0 else (theta,theta_0)
 #pragma: coderesponse end
 
 
