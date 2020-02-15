@@ -58,6 +58,19 @@ def load_data(path_data, extras=False):
 
     return data
 
+def load_words(path_data):
+    """
+    Returns a set of words:
+    """
+    if PYTHON3:
+        f_data = open(path_data, encoding="latin1")
+    else:
+        f_data = open(path_data)
+    words = set()
+    for word in f_data:
+        words.add(word.strip())
+    return words
+
 def write_predictions(path_submit_data, preds):
     if PYTHON3:
         f_data = open(path_submit_data, encoding="latin1")

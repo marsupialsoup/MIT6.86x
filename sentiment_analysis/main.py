@@ -15,10 +15,14 @@ val_texts, val_labels = zip(*((sample['text'], sample['sentiment']) for sample i
 test_texts, test_labels = zip(*((sample['text'], sample['sentiment']) for sample in test_data))
 
 dictionary = p1.bag_of_words(train_texts)
+#stopwords = utils.load_words('stopwords.txt')
+#dictionary = p1.remove_stop_words(stopwords,dictionary)
 
+#train_bow_features = p1.extract_bow_feature_vectors_with_count(train_texts, dictionary)
 train_bow_features = p1.extract_bow_feature_vectors(train_texts, dictionary)
 val_bow_features = p1.extract_bow_feature_vectors(val_texts, dictionary)
 test_bow_features = p1.extract_bow_feature_vectors(test_texts, dictionary)
+#test_bow_features = p1.extract_bow_feature_vectors_with_count(test_texts, dictionary)
 
 #-------------------------------------------------------------------------------
 # Problem 5
@@ -105,16 +109,16 @@ data = (train_bow_features, train_labels, val_bow_features, val_labels)
 # test_bow_features and test_labels.
 #-------------------------------------------------------------------------------
 
-# print(p1.classifier_accuracy(p1.pegasos,train_bow_features,test_bow_features,train_labels,test_labels,T=25,L=0.01))
+print(p1.classifier_accuracy(p1.pegasos,train_bow_features,test_bow_features,train_labels,test_labels,T=25,L=0.01))
 
 #-------------------------------------------------------------------------------
 # Assign to best_theta, the weights (and not the bias!) learned by your most
 # accurate algorithm with the optimal choice of hyperparameters.
 #-------------------------------------------------------------------------------
 
-best_theta, best_theta_0 = p1.pegasos(train_bow_features,train_labels,25,0.01)
-wordlist   = [word for (idx, word) in sorted(zip(dictionary.values(), dictionary.keys()))]
-sorted_word_features = utils.most_explanatory_word(best_theta, wordlist)
-print("Most Explanatory Word Features")
-print(sorted_word_features[:10])
-print(sorted_word_features[-10:])
+# best_theta, best_theta_0 = p1.pegasos(train_bow_features,train_labels,25,0.01)
+# wordlist   = [word for (idx, word) in sorted(zip(dictionary.values(), dictionary.keys()))]
+# sorted_word_features = utils.most_explanatory_word(best_theta, wordlist)
+# print("Most Explanatory Word Features")
+# print(sorted_word_features[:10])
+# print(sorted_word_features[-10:])

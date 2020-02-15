@@ -349,6 +349,19 @@ def bag_of_words(texts):
     return dictionary
 #pragma: coderesponse end
 
+def remove_stop_words(stopwords,dictionary):
+    """
+    Inputs a set of stopwords
+    Inputs a dictionary of words as given by bag_of_words
+    Returns a dictionary of unique unigrams with the stop words removed
+
+    """
+    # Your code here
+    new_dictionary = {}
+    for word in dictionary.keys():
+        if word not in stopwords:
+            new_dictionary[word] = len(new_dictionary)
+    return new_dictionary
 
 #pragma: coderesponse template
 def extract_bow_feature_vectors(reviews, dictionary):
@@ -374,6 +387,27 @@ def extract_bow_feature_vectors(reviews, dictionary):
     return feature_matrix
 #pragma: coderesponse end
 
+def extract_bow_feature_vectors_with_count(reviews, dictionary):
+    """
+    Inputs a list of string reviews
+    Inputs the dictionary of words as given by bag_of_words
+    Returns the bag-of-words feature matrix representation of the data.
+    The returned matrix is of shape (n, m), where n is the number of reviews
+    and m the total number of entries in the dictionary.
+
+    Feel free to change this code as guided by Problem 9
+    """
+    # Your code here
+
+    num_reviews = len(reviews)
+    feature_matrix = np.zeros([num_reviews, len(dictionary)])
+
+    for i, text in enumerate(reviews):
+        word_list = extract_words(text)
+        for word in word_list:
+            if word in dictionary:
+                feature_matrix[i, dictionary[word]] += 1
+    return feature_matrix
 
 #pragma: coderesponse template
 def accuracy(preds, targets):
