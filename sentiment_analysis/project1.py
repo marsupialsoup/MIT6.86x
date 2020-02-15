@@ -271,7 +271,7 @@ def classify(feature_matrix, theta, theta_0):
     be considered a positive classification.
     """
     # Your code here
-    raise NotImplementedError
+    return 2 *((np.dot(feature_matrix,theta)+theta_0 > 0)-0.5)
 #pragma: coderesponse end
 
 
@@ -309,7 +309,10 @@ def classifier_accuracy(
     accuracy of the trained classifier on the validation data.
     """
     # Your code here
-    raise NotImplementedError
+    theta, theta_0 = classifier(train_feature_matrix, train_labels, **kwargs)
+    train_pred_labels = classify(train_feature_matrix,theta,theta_0)
+    val_pred_labels = classify(val_feature_matrix,theta,theta_0)
+    return accuracy(train_pred_labels,train_labels), accuracy(val_pred_labels,val_labels)
 #pragma: coderesponse end
 
 

@@ -26,7 +26,7 @@ test_bow_features = p1.extract_bow_feature_vectors(test_texts, dictionary)
 
 # toy_features, toy_labels = toy_data = utils.load_toy_data('toy_data.tsv')
 #
-# T = 10
+# T = 30
 # L = 0.2
 #
 # thetas_perceptron = p1.perceptron(toy_features, toy_labels, T)
@@ -68,8 +68,8 @@ test_bow_features = p1.extract_bow_feature_vectors(test_texts, dictionary)
 # Problem 8
 #-------------------------------------------------------------------------------
 
-# data = (train_bow_features, train_labels, val_bow_features, val_labels)
-#
+data = (train_bow_features, train_labels, val_bow_features, val_labels)
+
 # # values of T and lambda to try
 # Ts = [1, 5, 10, 15, 25, 50]
 # Ls = [0.001, 0.01, 0.1, 1, 10]
