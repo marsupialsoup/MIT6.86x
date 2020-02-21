@@ -16,7 +16,9 @@ def closed_form(X, Y, lambda_factor):
         represents the y-axis intercept of the model and therefore X[0] = 1
     """
     # YOUR CODE HERE
-    raise NotImplementedError
+    _, d = X.shape
+    XT = np.transpose(X)
+    return np.matmul(np.matmul(np.linalg.inv(np.matmul(XT,X)+lambda_factor*np.eye(d)),XT),Y)
 
 ### Functions which are already complete, for you to use ###
 
