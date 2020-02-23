@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def project_onto_PC(X, pcs, n_components, feature_means):
+def project_onto_PC(X, pcs, n_components):
     """
     Given principal component vectors pcs = principal_components(X)
     this function returns a new data array in which each sample in X
@@ -150,7 +150,7 @@ def reconstruct_PC(x_pca, pcs, n_components, X):
     representation, x_pca.
     X = the original data to which PCA was applied to get pcs.
     """
-    feature_means = X - center_data(X)
+    feature_means = X - center_data(X)[0]
     feature_means = feature_means[0, :]
     x_reconstructed = np.dot(x_pca, pcs[:, range(n_components)].T) + feature_means
     return x_reconstructed
