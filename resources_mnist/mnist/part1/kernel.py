@@ -20,7 +20,7 @@ def polynomial_kernel(X, Y, c, p):
             kernel_matrix - (n, m) Numpy array containing the kernel matrix
     """
     # YOUR CODE HERE
-    raise NotImplementedError
+    return np.power(np.matmul(X,Y.T)+ c,p)
 
 
 
