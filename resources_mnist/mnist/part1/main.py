@@ -149,7 +149,7 @@ def run_softmax_on_MNIST_mod3(temp_parameter=1):
 
 
 # TODO: Run run_softmax_on_MNIST_mod3(), report the error rate
-print(run_softmax_on_MNIST_mod3(temp_parameter=1))
+# print(run_softmax_on_MNIST_mod3(temp_parameter=1))
 
 #######################################################################
 # 7. Classification Using Manually Crafted Features

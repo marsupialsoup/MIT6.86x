@@ -242,9 +242,12 @@ def check_project_onto_PC():
         [-5.61248608, 0],
     ])
     n_components = 2
+    feature_means = np.array([
+        [2.5, 5, 7.5]
+    ])
     if check_array(
             ex_name, features.project_onto_PC,
-            exp_res, X, pcs, n_components):
+            exp_res, X, pcs, n_components, feature_means):
         return
     log(green("PASS"), ex_name, "")
 
