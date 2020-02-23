@@ -39,4 +39,6 @@ def rbf_kernel(X, Y, gamma):
             kernel_matrix - (n, m) Numpy array containing the kernel matrix
     """
     # YOUR CODE HERE
-    raise NotImplementedError
+    X2 = np.square(np.linalg.norm(X, axis=1, keepdims=True))
+    Y2 = np.square(np.linalg.norm(Y, axis=1, keepdims=True))
+    return np.exp(-gamma*(X2-2*np.matmul(X,Y.T)+Y2.T))
