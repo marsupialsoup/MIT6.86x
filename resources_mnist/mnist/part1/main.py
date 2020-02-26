@@ -164,7 +164,7 @@ def run_softmax_on_MNIST_mod3(temp_parameter=1):
 # train_pca (and test_pca) is a representation of our training (and test) data
 # after projecting each example onto the first 18 principal components.
 n_components = 18
-pcs = principal_components(train_x)
+pcs = principal_components(center_data(train_x)[0])
 train_pca = project_onto_PC(train_x, pcs, n_components)
 test_pca = project_onto_PC(test_x, pcs, n_components)
 
