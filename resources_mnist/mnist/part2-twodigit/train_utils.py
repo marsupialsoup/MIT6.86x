@@ -11,6 +11,7 @@ class Flatten(nn.Module):
     """A custom layer that views an input as 1D."""
     
     def forward(self, input):
+        # print(input.shape) # batch size, channels, height, width
         return input.view(input.size(0), -1)
 
 
@@ -38,7 +39,9 @@ def compute_accuracy(predictions, y):
 def train_model(train_data, dev_data, model, lr=0.01, momentum=0.9, nesterov=False, n_epochs=30):
     """Train a model for N epochs given data and hyper-params."""
     # We optimize with SGD
-    optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum, nesterov=nesterov)
+    optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum, nesterov=True)
+    # optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    # optimizer = torch.optim.Adagrad(model.parameters(), lr=lr)
 
     for epoch in range(1, n_epochs + 1):
         print("-------------\nEpoch {}:\n".format(epoch))

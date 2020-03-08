@@ -19,12 +19,29 @@ class CNN(nn.Module):
 
     def __init__(self, input_dimension):
         super(CNN, self).__init__()
-        # TODO initialize model layers here
+        c1_channels, c2_channels, hidden_units = 32, 64, 128
+        self.conv1 = nn.Conv2d(1, c1_channels, (5, 5))
+        self.maxpool = nn.MaxPool2d((3,3))
+        self.conv2 = nn.Conv2d(c1_channels, c2_channels, (3,3))
+        self.maxpool2 = nn.MaxPool2d((2,2))
+        self.dropout = nn.Dropout(p=0.5)
+        self.flatten = Flatten()
+        self.fc1 = nn.Linear(5*3*c2_channels, hidden_units)
+        self.fc2 = nn.Linear(hidden_units, 20)
+
 
     def forward(self, x):
+        x = self.conv1(x)
+        x = self.maxpool(x)
+        x = self.conv2(x)
+        x = self.maxpool2(x)
+        x = self.dropout(x)
+        x = self.flatten(x)
+        x = self.fc1(x)
+        x = F.relu(x)
+        x = self.fc2(x)
 
-        # TODO use model layers to predict the two digits
-
+        out_first_digit, out_second_digit = x[:, 0:10], x[:, 10:20]
         return out_first_digit, out_second_digit
 
 def main():
@@ -52,7 +69,7 @@ def main():
     model = CNN(input_dimension) # TODO add proper layers to CNN class above
 
     # Train
-    train_model(train_batches, dev_batches, model)
+    train_model(train_batches, dev_batches, model, n_epochs=nb_epoch)
 
     ## Evaluate the model on test data
     loss, acc = run_epoch(test_batches, model.eval(), None)
