@@ -27,6 +27,7 @@ class CNN(nn.Module):
         self.dropout = nn.Dropout(p=0.5)
         self.flatten = Flatten()
         self.fc1 = nn.Linear(5*3*c2_channels, hidden_units)
+        self.batch = nn.BatchNorm1d(hidden_units)
         self.fc2 = nn.Linear(hidden_units, 20)
 
 
@@ -38,7 +39,7 @@ class CNN(nn.Module):
         x = self.dropout(x)
         x = self.flatten(x)
         x = self.fc1(x)
-        x = F.relu(x)
+        x = F.relu(self.batch(x))
         x = self.fc2(x)
 
         out_first_digit, out_second_digit = x[:, 0:10], x[:, 10:20]
