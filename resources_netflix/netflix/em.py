@@ -20,18 +20,21 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
     """
     n, _ = X.shape
     K, d = mixture.mu.shape
-    post = np.zeros((n, K))
+    f = np.zeros((n,K))
+    delta = (X != 0)
+    logpost = np.zeros((n, K))
 
-    for i in range(n):
-        tiled_vector = np.tile(X[i, :], (K, 1))
-        sse = ((tiled_vector - mixture.mu) ** 2).sum(axis=1)
-        post[i, :] = mixture.p * np.exp(-sse / (2 * mixture.var)) / (np.sqrt(2 * np.pi * mixture.var) ** d)
+    for u in range(n):
+        tiled_vector = np.tile(X[u, :], (K, 1))
+        sse = ( delta[u, :] * (tiled_vector - mixture.mu) ** 2).sum(axis=1)
+        Cu = delta[u, :].sum()
+        f[u, :] = np.log(mixture.p) - 0.5 * Cu * np.log(2 * np.pi * mixture.var) - sse / (2 * mixture.var)
+        logpost[u, :] = f[u, :] - logsumexp(f[u, :])
 
-    prob = np.sum(post, 1)
-    cost = np.sum(np.log(prob))
-    post = post / np.tile(prob, (K,1)).T
+    loglikelihood = logsumexp(f, axis = 1).sum()
+    post = np.exp(logpost)
 
-    return post, cost
+    return post, loglikelihood
 
 
 def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
