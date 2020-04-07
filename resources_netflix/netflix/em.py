@@ -34,8 +34,7 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
     return post, cost
 
 
-def mstep(X: np.ndarray, post: np.ndarray, mixture: GaussianMixture,
-          min_variance: float = .25) -> GaussianMixture:
+def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
     """M-step: Updates the gaussian mixture by maximizing the log-likelihood
     of the weighted dataset
 
@@ -43,14 +42,25 @@ def mstep(X: np.ndarray, post: np.ndarray, mixture: GaussianMixture,
         X: (n, d) array holding the data, with incomplete entries (set to 0)
         post: (n, K) array holding the soft counts
             for all components for all examples
-        mixture: the current gaussian mixture
-        min_variance: the minimum variance for each gaussian
 
     Returns:
         GaussianMixture: the new gaussian mixture
     """
-    raise NotImplementedError
+    n, d = X.shape
+    _, K = post.shape
 
+    n_hat = post.sum(axis=0)
+    p = n_hat / n
+
+    mu = np.zeros((K, d))
+    var = np.zeros(K)
+
+    for j in range(K):
+        mu[j, :] = post[:, j] @ X / n_hat[j]
+        sse = ((mu[j] - X) ** 2).sum(axis=1) @ post[:, j]
+        var[j] = sse / (d * n_hat[j])
+
+    return GaussianMixture(mu, var, p)
 
 def run(X: np.ndarray, mixture: GaussianMixture,
         post: np.ndarray) -> Tuple[GaussianMixture, np.ndarray, float]:
@@ -67,7 +77,15 @@ def run(X: np.ndarray, mixture: GaussianMixture,
             for all components for all examples
         float: log-likelihood of the current assignment
     """
-    raise NotImplementedError
+    loglikelihood = None
+    post, new_loglikelihood = estep(X, mixture)
+    while (loglikelihood is None or new_loglikelihood - loglikelihood > 1e-6 * abs(new_loglikelihood)):
+        loglikelihood = new_loglikelihood
+        mixture = mstep(X, post)
+        post, new_loglikelihood = estep(X, mixture)
+
+
+    return mixture, post, new_loglikelihood
 
 
 def fill_matrix(X: np.ndarray, mixture: GaussianMixture) -> np.ndarray:
