@@ -37,7 +37,8 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
     return post, loglikelihood
 
 
-def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
+def mstep(X: np.ndarray, post: np.ndarray, mixture: GaussianMixture,
+          min_variance: float = .25) -> GaussianMixture:
     """M-step: Updates the gaussian mixture by maximizing the log-likelihood
     of the weighted dataset
 
@@ -45,6 +46,8 @@ def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
         X: (n, d) array holding the data, with incomplete entries (set to 0)
         post: (n, K) array holding the soft counts
             for all components for all examples
+        mixture: the current gaussian mixture
+        min_variance: the minimum variance for each gaussian
 
     Returns:
         GaussianMixture: the new gaussian mixture
@@ -55,13 +58,19 @@ def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
     n_hat = post.sum(axis=0)
     p = n_hat / n
 
-    mu = np.zeros((K, d))
-    var = np.zeros(K)
+    delta = (X != 0)
+    C = delta.sum(axis=1)
+    mu = mixture.mu
+    var = mixture.var
 
     for j in range(K):
-        mu[j, :] = post[:, j] @ X / n_hat[j]
-        sse = ((mu[j] - X) ** 2).sum(axis=1) @ post[:, j]
-        var[j] = sse / (d * n_hat[j])
+        support = post[:, j] @ delta
+        mu_update = support >= 1
+        mu_new = post[:, j] @ (delta * X) / support
+        mu[j, :] = mu_update * mu_new + (1 - mu_update) * mu[j, :]
+        sse = (delta * (mu[j] - X) ** 2).sum(axis=1) @ post[:, j]
+        var_new = sse / (post[:, j] @ C)
+        var[j] = var_new if var_new > min_variance else min_variance
 
     return GaussianMixture(mu, var, p)
 
