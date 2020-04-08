@@ -93,7 +93,7 @@ def run(X: np.ndarray, mixture: GaussianMixture,
     post, new_loglikelihood = estep(X, mixture)
     while (loglikelihood is None or new_loglikelihood - loglikelihood > 1e-6 * abs(new_loglikelihood)):
         loglikelihood = new_loglikelihood
-        mixture = mstep(X, post)
+        mixture = mstep(X, post, mixture)
         post, new_loglikelihood = estep(X, mixture)
 
 
