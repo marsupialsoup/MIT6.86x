@@ -28,7 +28,7 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
         tiled_vector = np.tile(X[u, :], (K, 1))
         sse = ( delta[u, :] * (tiled_vector - mixture.mu) ** 2).sum(axis=1)
         Cu = delta[u, :].sum()
-        f[u, :] = np.log(mixture.p) - 0.5 * Cu * np.log(2 * np.pi * mixture.var) - sse / (2 * mixture.var)
+        f[u, :] = np.log(mixture.p + 1e-16) - 0.5 * Cu * np.log(2 * np.pi * mixture.var) - sse / (2 * mixture.var)
         logpost[u, :] = f[u, :] - logsumexp(f[u, :])
 
     loglikelihood = logsumexp(f, axis = 1).sum()
@@ -66,7 +66,8 @@ def mstep(X: np.ndarray, post: np.ndarray, mixture: GaussianMixture,
     for j in range(K):
         support = post[:, j] @ delta
         mu_update = support >= 1
-        mu_new = post[:, j] @ (delta * X) / support
+        support = support + (1 - mu_update) * 1e-16
+        mu_new = post[:, j] @ (delta * X) / (support)
         mu[j, :] = mu_update * mu_new + (1 - mu_update) * mu[j, :]
         sse = (delta * (mu[j] - X) ** 2).sum(axis=1) @ post[:, j]
         var_new = sse / (post[:, j] @ C)
@@ -120,7 +121,7 @@ def fill_matrix(X: np.ndarray, mixture: GaussianMixture) -> np.ndarray:
         tiled_vector = np.tile(X[u, :], (K, 1))
         sse = ( delta[u, :] * (tiled_vector - mixture.mu) ** 2).sum(axis=1)
         Cu = delta[u, :].sum()
-        f[u, :] = np.log(mixture.p) - 0.5 * Cu * np.log(2 * np.pi * mixture.var) - sse / (2 * mixture.var)
+        f[u, :] = np.log(mixture.p + 1e-16) - 0.5 * Cu * np.log(2 * np.pi * mixture.var) - sse / (2 * mixture.var)
         logpost[u, :] = f[u, :] - logsumexp(f[u, :])
 
     post = np.exp(logpost)
