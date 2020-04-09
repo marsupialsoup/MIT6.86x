@@ -110,4 +110,20 @@ def fill_matrix(X: np.ndarray, mixture: GaussianMixture) -> np.ndarray:
     Returns
         np.ndarray: a (n, d) array with completed data
     """
-    raise NotImplementedError
+    n, _ = X.shape
+    K, d = mixture.mu.shape
+    f = np.zeros((n,K))
+    delta = (X != 0)
+    logpost = np.zeros((n, K))
+
+    for u in range(n):
+        tiled_vector = np.tile(X[u, :], (K, 1))
+        sse = ( delta[u, :] * (tiled_vector - mixture.mu) ** 2).sum(axis=1)
+        Cu = delta[u, :].sum()
+        f[u, :] = np.log(mixture.p) - 0.5 * Cu * np.log(2 * np.pi * mixture.var) - sse / (2 * mixture.var)
+        logpost[u, :] = f[u, :] - logsumexp(f[u, :])
+
+    post = np.exp(logpost)
+    Xfilled = delta * X + (1 - delta) * (post @ mixture.mu)
+
+    return Xfilled
