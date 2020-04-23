@@ -97,7 +97,7 @@ def run_episode(for_training):
     epi_reward = None
 
     # initialize for each episode
-    # TODO Your code here
+    epi_reward, t = 0, 0
 
     (current_room_desc, current_quest_desc, terminal) = framework.newGame()
     while not terminal:
@@ -105,20 +105,23 @@ def run_episode(for_training):
         current_state = current_room_desc + current_quest_desc
         current_state_vector = utils.extract_bow_feature_vector(
             current_state, dictionary)
-        # TODO Your code here
+        action_index, object_index = epsilon_greedy(current_state_vector, theta, epsilon)
+        next_room_desc, next_quest_desc, reward, terminal = framework.step_game(current_room_desc, current_quest_desc, \
+                                                                                action_index, object_index)
+        next_state = next_room_desc + next_quest_desc
+        next_state_vector = utils.extract_bow_feature_vector(next_state, dictionary)
 
         if for_training:
             # update Q-function.
-            # TODO Your code here
-            pass
+            linear_q_learning(theta, current_state_vector, action_index, object_index, reward, next_state_vector, terminal)
 
         if not for_training:
             # update reward
-            # TODO Your code here
-            pass
+            epi_reward = epi_reward + (GAMMA ** t) * reward
+            t = t + 1
 
         # prepare next step
-        # TODO Your code here
+        current_room_desc, current_quest_desc = next_room_desc, next_quest_desc
 
     if not for_training:
         return epi_reward
