@@ -65,10 +65,11 @@ def mstep(X: np.ndarray, post: np.ndarray, mixture: GaussianMixture,
 
     for j in range(K):
         support = post[:, j] @ delta
-        mu_update = support >= 1
-        support = support + (1 - mu_update) * 1e-16
-        mu_new = post[:, j] @ (delta * X) / (support)
-        mu[j, :] = mu_update * mu_new + (1 - mu_update) * mu[j, :]
+        # mu_update = support >= 1
+        # support = support + (1 - mu_update) * 1e-16
+        mu[j,:] = np.where(support >= 1, post[:, j] @ (delta * X) / (support), mu[j, :])
+        # mu_new = post[:, j] @ (delta * X) / (support)
+        # mu[j, :] = mu_update * mu_new + (1 - mu_update) * mu[j, :]
         sse = (delta * (mu[j] - X) ** 2).sum(axis=1) @ post[:, j]
         var_new = sse / (post[:, j] @ C)
         var[j] = var_new if var_new > min_variance else min_variance
