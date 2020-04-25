@@ -11,11 +11,11 @@ DEBUG = False
 GAMMA = 0.5  # discounted factor
 TRAINING_EP = 0.5  # epsilon-greedy parameter for training
 TESTING_EP = 0.05  # epsilon-greedy parameter for testing
-NUM_RUNS = 10
+NUM_RUNS = 5
 NUM_EPOCHS = 600
 NUM_EPIS_TRAIN = 25  # number of episodes for training at each epoch
 NUM_EPIS_TEST = 50  # number of episodes for testing
-ALPHA = 0.001  # learning rate for training
+ALPHA = 0.01  # learning rate for training
 
 ACTIONS = framework.get_actions()
 OBJECTS = framework.get_objects()
@@ -48,7 +48,8 @@ def epsilon_greedy(state_vector, theta, epsilon):
     if np.random.random() > epsilon:
         action_index, object_index = index2tuple(np.argmax(theta @ state_vector))
     else:
-        action_index, object_index = index2tuple(np.random.randint(NUM_ACTIONS*NUM_OBJECTS))
+        # action_index, object_index = index2tuple(np.random.randint(NUM_ACTIONS*NUM_OBJECTS))
+        action_index, object_index = np.random.randint(NUM_ACTIONS), np.random.randint(NUM_OBJECTS)
     return (action_index, object_index)
 # pragma: coderesponse end
 
@@ -126,7 +127,6 @@ def run_episode(for_training):
     if not for_training:
         return epi_reward
 
-
 def run_epoch():
     """Runs one epoch and returns reward averaged over test episodes"""
     rewards = []
@@ -180,4 +180,4 @@ if __name__ == '__main__':
     axis.set_ylabel('reward')
     axis.set_title(('Linear: nRuns=%d, Epilon=%.2f, Epi=%d, alpha=%.4f' %
                     (NUM_RUNS, TRAINING_EP, NUM_EPIS_TRAIN, ALPHA)))
-
+    plt.show()

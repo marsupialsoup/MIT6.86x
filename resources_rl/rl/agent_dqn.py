@@ -82,7 +82,7 @@ def deep_q_learning(current_state_vector, action_index, object_index, reward,
     with torch.no_grad():
         q_values_action_next, q_values_object_next = model(next_state_vector)
     maxq_next = 1 / 2 * (q_values_action_next.max()
-                         + q_values_object_next.max())
+                         + q_values_object_next.max()) if not terminal else 0
 
     q_value_cur_state = model(current_state_vector)
     q_value = 1 / 2 * (q_value_cur_state[0][action_index]
